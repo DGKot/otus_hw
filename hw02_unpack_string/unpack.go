@@ -43,7 +43,6 @@ func Unpack(input string) (string, error) {
 		}
 	}
 	return builder.String(), nil
-
 }
 
 func writeString(builder *strings.Builder, runeArr []rune, idx int) {
