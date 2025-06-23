@@ -1,4 +1,4 @@
-package hw03frequencyanalysis
+package main
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 )
 
 // Change to true if needed.
-var taskWithAsteriskIsCompleted = false
+var taskWithAsteriskIsCompleted = true
 
 var text = `Как видите, он  спускается  по  лестнице  вслед  за  своим
 	другом   Кристофером   Робином,   головой   вниз,  пересчитывая
@@ -76,6 +76,36 @@ func TestTop10(t *testing.T) {
 				"не",        // 4
 				"то",        // 4
 			}
+			require.Equal(t, expected, Top10(text))
+		}
+	})
+}
+
+func TestPunc(t *testing.T) {
+	text := "! , . ) (  )   ---  --- !!   !! !! **"
+	t.Run("punc test", func(t *testing.T) {
+		if taskWithAsteriskIsCompleted {
+			expected := []string{"!!", "---", "**"}
+			require.Equal(t, expected, Top10(text))
+		}
+	})
+}
+
+func TestPuncInsideWord(t *testing.T) {
+	text := "dog,cat, dog...cat, dogcat dog...cat dog...cat  dogcat"
+	t.Run("punc inside word test", func(t *testing.T) {
+		if taskWithAsteriskIsCompleted {
+			expected := []string{"dog...cat", "dogcat", "dog,cat"}
+			require.Equal(t, expected, Top10(text))
+		}
+	})
+}
+
+func TestSameValues(t *testing.T) {
+	text := "c a b a   B C"
+	t.Run("same value test", func(t *testing.T) {
+		if taskWithAsteriskIsCompleted {
+			expected := []string{"a", "b", "c"}
 			require.Equal(t, expected, Top10(text))
 		}
 	})
