@@ -25,7 +25,7 @@ func Run(tasks []Task, n, m int) error {
 			defer wg.Done()
 			for task := range taskCh {
 				if atomic.LoadInt64(&errCounter) >= int64(m) {
-					continue
+					return
 				}
 				err := task()
 				if err != nil {
