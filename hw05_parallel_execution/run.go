@@ -15,19 +15,23 @@ func Run(tasks []Task, n, m int) error {
 		n = 1
 	}
 
-	taskCh := make(chan Task, n)
 	var errCounter int64
+	var idx int64 = -1
 	var wg sync.WaitGroup
 
 	for i := 0; i < n; i++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			for task := range taskCh {
+			for {
 				if atomic.LoadInt64(&errCounter) >= int64(m) {
 					return
 				}
-				err := task()
+				i := atomic.AddInt64(&idx, 1)
+				if i >= int64(len(tasks)) {
+					return
+				}
+				err := tasks[i]()
 				if err != nil {
 					atomic.AddInt64(&errCounter, 1)
 				}
@@ -35,13 +39,6 @@ func Run(tasks []Task, n, m int) error {
 		}()
 	}
 
-	for _, task := range tasks {
-		if atomic.LoadInt64(&errCounter) >= int64(m) {
-			break
-		}
-		taskCh <- task
-	}
-	close(taskCh)
 	wg.Wait()
 
 	if atomic.LoadInt64(&errCounter) >= int64(m) {
