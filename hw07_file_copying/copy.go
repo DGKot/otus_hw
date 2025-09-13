@@ -41,7 +41,7 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	defer file.Close()
 	fileInfo, err := file.Stat()
 	if err != nil {
-		return ErrUnsupportedFile
+		return err
 	}
 	if fileInfo.Size() < offset {
 		return ErrOffsetExceedsFileSize
