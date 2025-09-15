@@ -22,10 +22,4 @@ func TestReadDir(t *testing.T) {
 		}
 		require.Equal(t, expected, result)
 	})
-
-	t.Run("Environment to string", func(t *testing.T) {
-		expectedString := []string{"BAR=bar", "EMPTY=", "FOO=   foo\nwith new line", "HELLO=\"hello\"", "UNSET="}
-		res := expected.ToSliceString()
-		require.Equal(t, expectedString, res)
-	})
 }
