@@ -60,7 +60,6 @@ func (t *telnetClient) Close() error {
 	if t.conn == nil {
 		return nil
 	}
-	t.out.Write([]byte("Connect closed"))
 	return t.conn.Close()
 }
 
