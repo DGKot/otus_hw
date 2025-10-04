@@ -1,4 +1,4 @@
-module github.com/DGKot/hw11_telnet_client
+module github.com/DGKot/otus_hw/hw11_telnet_client
 
 go 1.23
 
