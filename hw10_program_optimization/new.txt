@@ -1,12 +1,6 @@
 === RUN   TestGetDomainStat_Time_And_Memory
-    stats_optimization_test.go:46: time used: 133.821417ms / 300ms
-    stats_optimization_test.go:47: memory used: 33Mb / 30Mb
-    stats_optimization_test.go:50: 
-        	Error Trace:	/Users/kotlyar_dg/projects/go/otus_hw/hw10_program_optimization/stats_optimization_test.go:50
-        	Error:      	"35371160" is not less than "31457280"
-        	Test:       	TestGetDomainStat_Time_And_Memory
-        	Messages:   	the program is too greedy
---- FAIL: TestGetDomainStat_Time_And_Memory (1.51s)
-FAIL
-FAIL	github.com/DGKot/hw10_program_optimization	2.817s
-FAIL
+    stats_optimization_test.go:46: time used: 130.981792ms / 300ms
+    stats_optimization_test.go:47: memory used: 23Mb / 30Mb
+--- PASS: TestGetDomainStat_Time_And_Memory (1.50s)
+PASS
+ok  	github.com/DGKot/hw10_program_optimization	1.800s
