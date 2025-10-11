@@ -33,14 +33,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
 
+      - name: Check out code
+        uses: actions/checkout@v3
+
       - name: Download dependencies
         run: |
           go mod tidy
           go mod download
           go list ./... > /dev/null
-
-      - name: Check out code
-        uses: actions/checkout@v3
 
       - name: Linters
         uses: golangci/golangci-lint-action@v3
