@@ -31,13 +31,22 @@ jobs:
             ${{ runner.os }}-go-
 
       - name: Download dependencies
-        run: go mod download
+        run: |
+          go mod tidy
+          go mod download
+          go list ./... > /dev/null
+
+      - name: Verify dependencies
+        run: |
+          echo "===> Checking for missing packages"
+          go mod verify
 
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v6
         with:
           version: v1.57.2
           args: --timeout=5m ./...
+          skip-cache: true
 
   test:
     name: Run Unit Tests
