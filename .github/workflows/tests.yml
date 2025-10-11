@@ -98,7 +98,7 @@ jobs:
           go mod tidy
           go mod download
           go list ./... > /dev/null
-        working-directory: ./hw12_13_14_15_16_calendar
+        working-directory: hw12_13_14_15_16_calendar
 
       - name: make build
         run: make build
