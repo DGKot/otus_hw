@@ -105,7 +105,10 @@ jobs:
         working-directory: hw12_13_14_15_16_calendar
 
       - name: make lint
-        run: make lint
+        run: |
+          go mod tidy
+          go mod download
+          make lint
         working-directory: hw12_13_14_15_16_calendar
 
       - name: make test
