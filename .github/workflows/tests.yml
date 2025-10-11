@@ -93,6 +93,12 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
+      - name: Download dependencies
+        run: |
+          go mod tidy
+          go mod download
+          go list ./... > /dev/null
+
       - name: make lint
         run: make lint
         working-directory: hw12_13_14_15_16_calendar
