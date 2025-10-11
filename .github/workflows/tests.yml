@@ -7,7 +7,7 @@ on:
 
 env:
   GO111MODULE: "on"
-  GOLANG_VERSION: ~1.24
+  GOLANG_VERSION: ~1.23
   GOLANGCI_LINT_VERSION: v1.63.4
   
 jobs:
@@ -22,28 +22,9 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: ${{ env.GOLANG_VERSION }}
-      
-      - name: Cache Go modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/go/pkg/mod
-            ~/.cache/go-build
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
 
       - name: Check out code
         uses: actions/checkout@v3
-
-      - name: Download dependencies
-        run: |
-          go mod tidy
-          go mod download
-          go list ./... > /dev/null
-
-      - name: Build project
-        run: go build ./...
 
       - name: Linters
         uses: golangci/golangci-lint-action@v3
@@ -93,22 +74,12 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-      - name: Download dependencies
-        run: |
-          go mod tidy
-          go mod download
-          go list ./... > /dev/null
+      - name: make lint
+        run: make lint
         working-directory: hw12_13_14_15_16_calendar
 
       - name: make build
         run: make build
-        working-directory: hw12_13_14_15_16_calendar
-
-      - name: make lint
-        run: |
-          go mod tidy
-          go mod download
-          make lint
         working-directory: hw12_13_14_15_16_calendar
 
       - name: make test
