@@ -9,11 +9,11 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/DGKot/otus_hw/hw12_13_14_15_calendar/internal/app"
-	"github.com/DGKot/otus_hw/hw12_13_14_15_calendar/internal/logger"
-	internalhttp "github.com/DGKot/otus_hw/hw12_13_14_15_calendar/internal/server/http"
-	memorystorage "github.com/DGKot/otus_hw/hw12_13_14_15_calendar/internal/storage/memory"
-	sqlstorage "github.com/DGKot/otus_hw/hw12_13_14_15_calendar/internal/storage/sql"
+	"github.com/DGKot/otus_hw/hw12_13_14_15_16_calendar/internal/app"
+	"github.com/DGKot/otus_hw/hw12_13_14_15_16_calendar/internal/logger"
+	internalhttp "github.com/DGKot/otus_hw/hw12_13_14_15_16_calendar/internal/server/http"
+	memorystorage "github.com/DGKot/otus_hw/hw12_13_14_15_16_calendar/internal/storage/memory"
+	sqlstorage "github.com/DGKot/otus_hw/hw12_13_14_15_16_calendar/internal/storage/sql"
 )
 
 var configFile string

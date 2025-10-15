@@ -1,4 +1,4 @@
-module github.com/DGKot/otus_hw/hw12_13_14_15_calendar
+module github.com/DGKot/otus_hw/hw12_13_14_15_16_calendar
 
 go 1.23.0
 

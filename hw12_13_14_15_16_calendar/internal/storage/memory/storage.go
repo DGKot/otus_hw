@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/DGKot/otus_hw/hw12_13_14_15_calendar/internal/storage"
+	"github.com/DGKot/otus_hw/hw12_13_14_15_16_calendar/internal/storage"
 )
 
 type Storage struct {
