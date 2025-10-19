@@ -31,6 +31,6 @@ install-lint-deps:
 
 lint: install-lint-deps
 	go mod download
-	golangci-lint run ./...
+	golangci-lint run --modules-download-mode=mod ./...
 
 .PHONY: build run build-img run-img version test lint
