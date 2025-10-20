@@ -2,8 +2,6 @@ module github.com/DGKot/otus_hw/hw12_13_14_15_16_calendar
 
 go 1.23.0
 
-toolchain go1.24.0
-
 require (
 	github.com/stretchr/testify v1.11.1
 	gopkg.in/yaml.v3 v3.0.1
