@@ -1,0 +1,45 @@
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: build/Dockerfile
+    container_name: calendar-app
+    depends_on:
+      - postgres
+    environment:
+      - CONFIG_FILE=/app/config.yaml
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_HOST=${POSTGRES_HOST}
+      - DB_PORT=${POSTGRES_PORT}
+      - DB_NAME=${POSTGRES_DB}
+    ports:
+      - "8080:8080"
+    restart: always
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+
+  postgres:
+    image: postgres:16
+    container_name: calendar-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U calendar_user -d calendar" ]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+
+volumes:
+  pgdata:

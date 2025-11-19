@@ -2,22 +2,24 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
-	"github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/app"
-	"github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/logger"
-	internalhttp "github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/server/http"
-	memorystorage "github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/storage/memory"
+	"github.com/DGKot/otus_hw/hw12_13_14_15_16_calendar/internal/app"
+	"github.com/DGKot/otus_hw/hw12_13_14_15_16_calendar/internal/logger"
+	internalhttp "github.com/DGKot/otus_hw/hw12_13_14_15_16_calendar/internal/server/http"
+	memorystorage "github.com/DGKot/otus_hw/hw12_13_14_15_16_calendar/internal/storage/memory"
+	sqlstorage "github.com/DGKot/otus_hw/hw12_13_14_15_16_calendar/internal/storage/sql"
 )
 
 var configFile string
 
 func init() {
-	flag.StringVar(&configFile, "config", "/etc/calendar/config.toml", "Path to configuration file")
+	flag.StringVar(&configFile, "config", "./../../configs/config.yaml", "Path to configuration file")
 }
 
 func main() {
@@ -28,13 +30,25 @@ func main() {
 		return
 	}
 
-	config := NewConfig()
-	logg := logger.New(config.Logger.Level)
+	config := NewConfig(configFile)
+	logg := logger.New(logger.LogDeps{Level: config.Logger.Level})
 
-	storage := memorystorage.New()
+	storage, err := createStorage(config.DB)
+	if err != nil {
+		logg.Error(err.Error())
+		os.Exit(1)
+	}
+
 	calendar := app.New(logg, storage)
 
-	server := internalhttp.NewServer(logg, calendar)
+	serverDeps := &internalhttp.ServerDeps{
+		Host:         config.Server.Host,
+		Port:         config.Server.Port,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+	server := internalhttp.NewServer(logg, calendar, *serverDeps)
 
 	ctx, cancel := signal.NotifyContext(context.Background(),
 		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
@@ -57,5 +71,20 @@ func main() {
 		logg.Error("failed to start http server: " + err.Error())
 		cancel()
 		os.Exit(1) //nolint:gocritic
+	}
+	logg.Info("END")
+}
+
+func createStorage(cfg DBConf) (app.Storage, error) {
+	switch cfg.Type {
+	case "memory":
+		return memorystorage.New(), nil
+	case "sql":
+		return sqlstorage.New(sqlstorage.DBDeps{
+			DSN:            cfg.DSN(),
+			MigrationsPath: cfg.MigrationsPath,
+		})
+	default:
+		return nil, errors.New("unknown db type")
 	}
 }
