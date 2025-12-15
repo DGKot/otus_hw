@@ -1,5 +1,14 @@
 package hw09structvalidator
 
+import (
+	"errors"
+	"fmt"
+	"reflect"
+	"regexp"
+	"strconv"
+	"strings"
+)
+
 type ValidationError struct {
 	Field string
 	Err   error
@@ -8,8 +17,23 @@ type ValidationError struct {
 type ValidationErrors []ValidationError
 
 func (v ValidationErrors) Error() string {
-	panic("implement me")
+	str := ""
+	for _, val := range v {
+		str += fmt.Sprintf("for field %s error is %s\n", val.Field, val.Err.Error())
+	}
+	return str
 }
+
+var (
+	ErrMissType             = errors.New("not structure param")
+	ErrStructWithoutFields  = errors.New("structure without fields")
+	ErrInvalidValidateParam = errors.New("invalid validate param")
+	ErrValidateIntMax       = errors.New("value bigger then max value")
+	ErrValidateIntMin       = errors.New("value less then min value")
+	ErrValidateIn           = errors.New("value not in options")
+	ErrValidateStrLen       = errors.New("string len not equal param")
+	ErrValidateStrRegexp    = errors.New("string not match to regular expression")
+)
 
 func Validate(v interface{}) error {
 	// Place your code here.
