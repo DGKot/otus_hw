@@ -75,7 +75,8 @@ func validateStructField(field reflect.StructField,
 			validateErrors = append(validateErrors, ValidationError{Field: field.Name, Err: err})
 		}
 		if !isValidated && err != nil {
-			fmt.Printf("Error in process validate %s, validate params: %s\n", field.Name, validateParams)
+			validateErrors = append(validateErrors, ValidationError{Field: field.Name, Err: err})
+			return validateErrors
 		}
 	case "[]int", "[]string":
 		fmt.Println("Start check the slice")
@@ -89,7 +90,8 @@ func validateStructField(field reflect.StructField,
 			}
 			isValidated, err := ValidateField(valForCheck, validateParams)
 			if !isValidated && err != nil {
-				fmt.Printf("Error in process validate %s, validate params: %s\n", field.Name, validateParams)
+				validateErrors = append(validateErrors, ValidationError{Field: field.Name, Err: errSlice})
+				return validateErrors
 			}
 			if isValidated && err != nil {
 				errSlice = errors.Join(errSlice, err)
