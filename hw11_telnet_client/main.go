@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"os/signal"
 	"sync"
 	"time"
 )
@@ -31,8 +32,14 @@ func main() {
 	var closeOnce sync.Once
 	closeCh := make(chan struct{})
 
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, os.Interrupt)
+
 	go func() {
-		client.Send()
+		err := client.Send()
+		if err == nil {
+			log.Println("EOF. Connection is closed")
+		}
 		closeOnce.Do(func() {
 			client.Close()
 			close(closeCh)
@@ -41,6 +48,15 @@ func main() {
 
 	go func() {
 		client.Receive()
+		closeOnce.Do(func() {
+			client.Close()
+			close(closeCh)
+		})
+	}()
+
+	go func() {
+		<-sigCh
+		log.Println("SIGINT. Connection is closed")
 		closeOnce.Do(func() {
 			client.Close()
 			close(closeCh)
