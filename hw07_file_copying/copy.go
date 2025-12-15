@@ -36,12 +36,16 @@ func CopyCore(to io.Writer, from io.Reader, limit int64) error {
 func Copy(fromPath, toPath string, offset, limit int64) error {
 	file, err := os.Open(fromPath)
 	if err != nil {
-		return ErrUnsupportedFile
+		return err
 	}
 	defer file.Close()
 	fileInfo, err := file.Stat()
 	if err != nil {
 		return err
+	}
+	fileMode := fileInfo.Mode()
+	if !fileMode.IsRegular() || fileMode.Perm()&0o400 == 0 {
+		return ErrUnsupportedFile
 	}
 	if fileInfo.Size() < offset {
 		return ErrOffsetExceedsFileSize

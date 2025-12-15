@@ -1,5 +1,17 @@
-[logger]
-level = "INFO"
+logger:
+ level: "INFO"
+ file: "calendar.log"
+ maxSize: 1000
 
-# TODO
-# ...
+database:
+ type: "sql" #memory or sql
+ name: ${DB_NAME}
+ user: ${DB_USER}
+ password: ${DB_PASSWORD}
+ host: ${DB_HOST}
+ port: ${DB_PORT}
+ migrationsPath: "app/migrations"
+
+server:
+ host: 0.0.0.0
+ port: 8080

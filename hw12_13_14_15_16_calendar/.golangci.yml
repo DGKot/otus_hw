@@ -1,0 +1,85 @@
+run:
+  tests: true
+
+linters-settings:
+  funlen:
+    lines: 150
+    statements: 80
+  depguard:
+    list-type: whitelist
+    include-go-root: true
+    ignore-tests: false
+    packages-with-error-message:
+      "*": "import forbidden by depguard; разрешены только внутренние пакеты проекта, тестовые библиотеки и стандартная библиотека"
+    rules:
+      Main:
+        files:
+          - cmd/...
+          - internal/...
+          - pkg/...
+        allow:
+          - $gostd
+          - ${module}/internal/...
+          - ${module}/cmd/...
+          - ${module}/pkg/...
+          - github.com/golang-migrate/migrate/v4/...
+          - github.com/lib/pq
+      Test:
+        files:
+          - '*_test.go'
+        allow:
+          - $gostd
+          - ${module}/internal/...
+          - ${module}/cmd/...
+          - ${module}/pkg/...
+          - github.com/stretchr/testify/...
+          - github.com/golang-migrate/migrate/v4/...
+          - github.com/lib/pq
+
+linters:
+  disable-all: true
+  enable:
+    - asciicheck
+    - depguard
+    - dogsled
+    - dupl
+    - bodyclose
+    - durationcheck
+    - errorlint
+    - exhaustive
+    - copyloopvar
+    - funlen
+    - gci
+    - gocognit
+    - goconst
+    - gocritic
+    - gocyclo
+    - godot
+    - gofmt
+    - gofumpt
+    - goheader
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - importas
+    - ineffassign
+    - lll
+    - makezero
+    - misspell
+    - nestif
+    - nilerr
+    - noctx
+    - nolintlint
+    - prealloc
+    - predeclared
+    - revive
+    - staticcheck
+    - stylecheck
+    - tagliatelle
+    - thelper
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - whitespace
