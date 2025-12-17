@@ -62,4 +62,27 @@ func TestTelnetClient(t *testing.T) {
 
 		wg.Wait()
 	})
+
+	t.Run("not connected client", func(t *testing.T) {
+		in := &bytes.Buffer{}
+		out := &bytes.Buffer{}
+
+		client := NewTelnetClient("localhost", time.Second*5, io.NopCloser(in), out)
+		require.EqualError(t, client.Send(), ErrNotConnect.Error())
+		require.EqualError(t, client.Receive(), ErrNotConnect.Error())
+		require.NoError(t, client.Close())
+	})
+
+	t.Run("Correct close", func(t *testing.T) {
+		l, err := net.Listen("tcp", "127.0.0.1:")
+		require.NoError(t, err)
+		defer func() { require.NoError(t, l.Close()) }()
+
+		in := &bytes.Buffer{}
+		out := &bytes.Buffer{}
+
+		client := NewTelnetClient(l.Addr().String(), time.Second*5, io.NopCloser(in), out)
+		require.NoError(t, client.Connect())
+		require.NoError(t, client.Close())
+	})
 }
