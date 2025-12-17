@@ -45,6 +45,12 @@ func (t *telnetClient) Send() error {
 		return ErrNotConnect
 	}
 	_, err := io.Copy(t.conn, t.in)
+	if err == nil {
+		tcp, ok := t.conn.(*net.TCPConn)
+		if ok {
+			_ = tcp.CloseWrite()
+		}
+	}
 	return err
 }
 

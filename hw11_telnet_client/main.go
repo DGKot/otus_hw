@@ -6,7 +6,6 @@ import (
 	"net"
 	"os"
 	"os/signal"
-	"sync"
 	"time"
 )
 
@@ -29,38 +28,25 @@ func main() {
 		log.Fatal("error connect to server:", err)
 	}
 
-	var closeOnce sync.Once
 	closeCh := make(chan struct{})
 
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, os.Interrupt)
 
 	go func() {
-		err := client.Send()
-		if err == nil {
-			log.Println("EOF. Connection is closed")
-		}
-		closeOnce.Do(func() {
-			client.Close()
-			close(closeCh)
-		})
+		_ = client.Send()
 	}()
 
 	go func() {
 		client.Receive()
-		closeOnce.Do(func() {
-			client.Close()
-			close(closeCh)
-		})
+		close(closeCh)
 	}()
 
-	go func() {
-		<-sigCh
+	select {
+	case <-sigCh:
 		log.Println("SIGINT. Connection is closed")
-		closeOnce.Do(func() {
-			client.Close()
-			close(closeCh)
-		})
-	}()
-	<-closeCh
+	case <-closeCh:
+	}
+
+	client.Close()
 }
