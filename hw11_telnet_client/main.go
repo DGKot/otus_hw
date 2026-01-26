@@ -6,6 +6,7 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"syscall"
 	"time"
 )
 
@@ -31,7 +32,9 @@ func main() {
 	closeCh := make(chan struct{})
 
 	sigCh := make(chan os.Signal, 1)
+	sigCd := make(chan os.Signal, 1)
 	signal.Notify(sigCh, os.Interrupt)
+	signal.Notify(sigCd, syscall.SIGQUIT)
 
 	go func() {
 		_ = client.Send()
@@ -45,6 +48,8 @@ func main() {
 	select {
 	case <-sigCh:
 		log.Println("SIGINT. Connection is closed")
+	case <-sigCd:
+		log.Println("SIGQUIT. Connection is closed")
 	case <-closeCh:
 	}
 
